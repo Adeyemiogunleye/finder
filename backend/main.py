@@ -1,11 +1,3 @@
-import os
-
-
-from dotenv import load_dotenv
-load_dotenv()
-
-
-
 """
 Grocery Finder backend with Entra ID authentication.
 
@@ -18,17 +10,23 @@ Authentication:
 """
 
 import math
+import os
+from pathlib import Path
 from typing import Optional
 
 import httpx
+from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 
+# Load .env sitting next to this file, regardless of working directory
+load_dotenv(Path(__file__).parent / ".env")
 
 TENANT_ID = os.environ["TENANT_ID"]
 CLIENT_ID = os.environ["CLIENT_ID"]
+print("TENANT_ID loaded:", TENANT_ID)  # temporary debug — remove later
 
 app = FastAPI(title="Grocery Finder")
 
@@ -45,8 +43,8 @@ OVERPASS_URL  = "https://overpass-api.de/api/interpreter"
 HEADERS       = {"User-Agent": "GroceryFinder/1.0 (a.yemiogunleye@gmail.com)"}
 
 # ── Entra ID config ───────────────────────────────────────────────────────────
-TENANT_ID = "b8c21247-f542-40ff-a9b1-bf727cbc693e"   # from Azure Portal
-CLIENT_ID = "d70fb0c6-2172-4fe1-a2b7-2cf7b50f1187"   # from Azure Portal
+   # from Azure Portal
+   # from Azure Portal
 
 JWKS_URL = f"https://login.microsoftonline.com/{TENANT_ID}/discovery/v2.0/keys"
 ISSUER   = f"https://sts.windows.net/{TENANT_ID}/"
