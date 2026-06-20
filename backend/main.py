@@ -20,6 +20,7 @@ from fastapi import Depends, FastAPI, HTTPException, Query, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
+from fastapi.staticfiles import StaticFiles
 
 # Load .env sitting next to this file, regardless of working directory
 load_dotenv(Path(__file__).parent / ".env")
@@ -230,3 +231,9 @@ async def nearest_grocery(
 async def health():
     """Public endpoint — no auth required."""
     return {"status": "ok"}
+
+# Serve the built React app. Must come AFTER all API routes.
+app.mount(
+    "/", StaticFiles(directory=Path(__file__).parent / "static", html=True), 
+    name="static",
+    )

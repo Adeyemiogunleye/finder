@@ -88,7 +88,7 @@ function GroceryFinder() {
     const timer = setTimeout(async () => {
       try {
         const res = await authFetch(
-          `/api/autocomplete?q=${encodeURIComponent(address)}`,
+          `/autocomplete?q=${encodeURIComponent(address)}`,
           { signal: controller.signal }
         );
         if (!res.ok) return;
@@ -129,7 +129,7 @@ function GroceryFinder() {
     setError("");
     try {
       const params = new URLSearchParams({ address, radius_m: radius });
-      const res = await authFetch(`/api/nearest-grocery?${params}`);
+      const res = await authFetch(`/nearest-grocery?${params}`);
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         throw new Error(body.detail || "Search failed.");
