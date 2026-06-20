@@ -1,0 +1,68 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  branches:
+    include:
+      - main
+variables:
+  - group: grocery-config
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Build
+    jobs:
+      - job: BuildApp
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '18.x'
+          - script: |
+              cd frontend
+              npm ci
+              npm run build
+            displayName: 'Build frontend'
+            env:
+              VITE_TENANT_ID: $(VITE_TENANT_ID)
+              VITE_CLIENT_ID: $(VITE_CLIENT_ID)
+              VITE_REDIRECT_URI: $(VITE_REDIRECT_URI)
+          
+          - script: |
+              mkdir -p backend/static
+              cp -r frontend/dist/* backend/static/
+            displayName: 'Bundle frontend into backend'
+
+          - task: ArchiveFiles@2
+            inputs:
+              rootFolderOrFile: 'backend'
+              includeRootFolder: false
+              archiveType: zip
+              archiveFile: '$(Build.ArtifactStagingDirectory)/app.zip'
+          - publish: '$(Build.ArtifactStagingDirectory)/app.zip'
+            artifact: drop
+  - stage: Deploy
+    dependsOn: Build
+    jobs:
+      - deployment: DeployWeb
+        environment: production
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: drop
+                - task: AzureWebApp@1
+                  inputs:
+                    azureSubscription: 'grocery-finder'
+                    appName: 'grocery-finder'
+                    appType: webAppLinux
+                    package: '$(Pipeline.Workspace)/drop/app.zip'
+
+
+          
+
+
