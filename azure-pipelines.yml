@@ -58,7 +58,7 @@ stages:
                 - task: AzureWebApp@1
                   inputs:
                     azureSubscription: 'grocery-finder'
-                    appName: 'grocery-finder'
+                    appName: 'grocery-find'
                     appType: webAppLinux
                     package: '$(Pipeline.Workspace)/drop/app.zip'
 
