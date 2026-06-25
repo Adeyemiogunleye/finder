@@ -26,7 +26,7 @@ stages:
               script: |
                 cd frontend
                 npm ci
-                npm build
+                npm run build
             displayName: 'Build frontend'
             env:
               VITE_TENANT_ID: $(VITE_TENANT_ID)
