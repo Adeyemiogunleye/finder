@@ -6,6 +6,9 @@
 trigger:
 - main
 
+variables:
+- group: grocery-config
+
 pool:
   vmImage: ubuntu-latest
 
