@@ -15,3 +15,5 @@ frontend/.env
 .venv/
 
 .claude
+
+.claudecode
